@@ -1,4 +1,4 @@
 bin/
 _local/
 open_cmd.bat
-test.bat
+build.bat
