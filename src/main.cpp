@@ -7,11 +7,11 @@
 
 int main(int argc, char *argv[])
 {
-    std::cout << ">>> TrashGenerator v1.0 <<<\n\n";
+    std::cout << ">>> TrashGenerator v0.1 <<<\n\n";
 
     if (argc != 3)
     {
-        std::cout << "Usage: TrashGenerator [file] [n]\n";
+        std::cout << "Usage: TrashGenerator [file] [n bytes]\n";
         return 1;
     }
 
@@ -26,8 +26,6 @@ int main(int argc, char *argv[])
     
     srand(static_cast<size_t>(time(NULL)));
 
-    int k = 0xFFFF;
-
     std::ofstream ofs;
     ofs.open(argv[1], std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
     if (ofs.is_open())
@@ -38,7 +36,7 @@ int main(int argc, char *argv[])
             ofs.write(reinterpret_cast<const char *>(&c), sizeof(char));
         }
         ofs.close();
-        std::cout << "Done!\n";
+        std::cout << "Operation successful!\n";
     }
     else
     {
