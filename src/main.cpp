@@ -7,7 +7,7 @@
 
 int main(int argc, char *argv[])
 {
-    std::cout << ">>> TrashGenerator v0.1 <<<\n\n";
+    std::cout << ">>> TrashGenerator v1.0 <<<\n\n";
 
     if (argc != 3)
     {
