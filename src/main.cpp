@@ -162,7 +162,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    srand(static_cast<size_t>(time(NULL)));
+    srand(static_cast<unsigned int>(time(NULL)));
     
     std::string part1;
     std::string part2;
