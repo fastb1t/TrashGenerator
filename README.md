@@ -45,7 +45,8 @@
 
 ## Тестировалось в
     Windows 7 x64
-    Linux Ubuntu Server
+    Ubuntu 16.04.3 x86
 
 ## Тестировалось компиляторами
-    GCC-8.2.0-3
+    GCC 8.2.0
+    GCC 5.4.0

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <string>
 #include <limits>
 #include <cstring>
@@ -24,16 +25,16 @@ static inline void showHelp()
     std::cout <<
         "Usage: TrashGenerator\n"
         "         -h | --help                     - Show help.\n"
-        "         -f | --file   [file]            - Name of file. If you specified more than one file,\n"
-        "                                           then specify [%] in the file name to indicate the\n"
-        "                                           file number, otherwise only one file will be\n"
-        "                                           created. For example: filename[%].dat\n"
+        "         -f | --file   [file]            - Name of file. If you specified more than one file, "
+        "then specify [%] in the file name to indicate the "
+        "file number, otherwise only one file will be "
+        "created. For example: filename[%].dat\n"
         "         -n | --files  [n]               - n files.\n"
         "         -b | --bytes  [n]               - n bytes.\n"
-        "         -s | --size   [fixed | random]  - Size of file. if --size == fixed, then the file will\n"
-        "                                           be created with a fixed size, and if --size == random,\n"
-        "                                           then the file will be created with a random size whose\n"
-        "                                           maximum value will be what you specified in --bytes\n"
+        "         -s | --size   [fixed | random]  - Size of file. if --size == fixed, then the file will "
+        "be created with a fixed size, and if --size == random, "
+        "then the file will be created with a random size whose "
+        "maximum value will be what you specified in --bytes\n"
     ;
 }
 
@@ -186,7 +187,9 @@ int main(int argc, char *argv[])
     {
         if (nfiles > 1l)
         {
-            tmp = part1 + std::to_string(i) + part2;
+            std::stringstream ss;
+            ss << i;
+            tmp = part1 + ss.str() + part2;
         }
         else
         {
@@ -194,7 +197,7 @@ int main(int argc, char *argv[])
         }
 
         std::ofstream ofs;
-        ofs.open(tmp, std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
+        ofs.open(tmp.c_str(), std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
         if (ofs.is_open())
         {
             long bytes = 0l;
