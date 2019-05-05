@@ -7,7 +7,6 @@
 #include <cstdlib>
 #include <ctime>
 
-
 static inline bool isNumber(const char *str)
 {
     for (int i = 0; i < strlen(str); i++)
