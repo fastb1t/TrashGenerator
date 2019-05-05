@@ -162,11 +162,39 @@ int main(int argc, char *argv[])
     }
 
     srand(static_cast<size_t>(time(NULL)));
+    
+    std::string part1;
+    std::string part2;
 
-    if (nfiles == 1l)
+    if (nfiles > 1l)
     {
+        size_t pos = filename.find("[%]");
+        if (pos != std::string::npos)
+        {
+            part1 = filename.substr(0, pos);
+            part2 = filename.substr(pos + 3, filename.length() - pos - 3);
+        }
+        else
+        {
+            std::cerr << "Error! Wrong file name.\n";
+            return 1;
+        }
+    }
+    
+    std::string tmp;
+    for (long i = 0l; i < nfiles; i++)
+    {
+        if (nfiles > 1l)
+        {
+            tmp = part1 + std::to_string(i) + part2;
+        }
+        else
+        {
+            tmp = filename;
+        }
+
         std::ofstream ofs;
-        ofs.open(filename, std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
+        ofs.open(tmp, std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
         if (ofs.is_open())
         {
             long bytes = 0l;
@@ -186,77 +214,19 @@ int main(int argc, char *argv[])
                 bytes = nbytes;
             }
 
-            for (long i = 0l; i < bytes; i++)
+            for (long j = 0l; j < bytes; j++)
             {
                 char c = rand() % (sizeof(char) * 0xFF);
                 ofs.write(reinterpret_cast<const char *>(&c), sizeof(char));
             }
-            
             ofs.close();
-            std::cout << "Operation successful!\n";
         }
         else
         {
-            std::cerr << "Error! File '" << filename << "' not created.\n";
-            return 1;
+            std::cerr << "Error! File '" << tmp << "' not created.\n";
         }
     }
-    else
-    {
-        std::string part1;
-        std::string part2;
-        std::string tmp;
-
-        size_t pos = filename.find("[%]");
-        if (pos != std::string::npos)
-        {
-            part1 = filename.substr(0, pos);
-            part2 = filename.substr(pos + 3, filename.length() - pos - 3);
-        }
-        else
-        {
-            std::cerr << "Error! Wrong file name.\n";
-            return 1;
-        }
-        
-        for (long i = 0l; i < nfiles; i++)
-        {
-            tmp = part1 + std::to_string(i) + part2;
-
-            std::ofstream ofs;
-            ofs.open(tmp, std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
-            if (ofs.is_open())
-            {
-                long bytes = 0l;
-                if (size_m == RANDOM_SIZE)
-                {
-                    if (nbytes > 0l)
-                    {
-                        bytes = rand() % nbytes;
-                    }
-                    else
-                    {
-                        bytes = rand() % std::numeric_limits<long>::max();
-                    }
-                }
-                else
-                {
-                    bytes = nbytes;
-                }
-
-                for (long j = 0l; j < bytes; j++)
-                {
-                    char c = rand() % (sizeof(char) * 0xFF);
-                    ofs.write(reinterpret_cast<const char *>(&c), sizeof(char));
-                }
-                ofs.close();
-            }
-            else
-            {
-                std::cerr << "Error! File '" << tmp << "' not created.\n";
-            }
-        }
-        std::cout << "Operation successful!\n";
-    }
+    
+    std::cout << "Operation successful!\n";
     return 0;
 }
