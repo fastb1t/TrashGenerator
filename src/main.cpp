@@ -28,8 +28,8 @@ static inline void showHelp()
         "                                           then specify [%] in the file name to indicate the\n"
         "                                           file number, otherwise only one file will be\n"
         "                                           created. For example: filename[%].dat\n"
-        "         -n | --files  [n]               - n files\n"
-        "         -b | --bytes  [n]               - n bytes\n"
+        "         -n | --files  [n]               - n files.\n"
+        "         -b | --bytes  [n]               - n bytes.\n"
         "         -s | --size   [fixed | random]  - Size of file. if --size == fixed, then the file will\n"
         "                                           be created with a fixed size, and if --size == random,\n"
         "                                           then the file will be created with a random size whose\n"
@@ -226,7 +226,7 @@ int main(int argc, char *argv[])
             std::cerr << "Error! File '" << tmp << "' not created.\n";
         }
     }
-    
+
     std::cout << "Operation successful!\n";
     return 0;
 }
