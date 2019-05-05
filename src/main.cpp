@@ -1,12 +1,13 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <limits>
 #include <cstring>
 #include <cstdlib>
 #include <ctime>
 
 
-bool isNumber(const char *str)
+static inline bool isNumber(const char *str)
 {
     for (int i = 0; i < strlen(str); i++)
     {
@@ -18,12 +19,12 @@ bool isNumber(const char *str)
     return true;
 }
 
-void showHelp()
+static inline void showHelp()
 {
     std::cout <<
         "Usage: TrashGenerator\n"
-        "         -h | --help                     - Show help\n"
-        "         -f | --file   [file]            - Name of file. if you specified more than one file,\n"
+        "         -h | --help                     - Show help.\n"
+        "         -f | --file   [file]            - Name of file. If you specified more than one file,\n"
         "                                           then specify [%] in the file name to indicate the\n"
         "                                           file number, otherwise only one file will be\n"
         "                                           created. For example: filename[%].dat\n"
@@ -52,9 +53,9 @@ int main(int argc, char *argv[])
         FIXED_SIZE
     };
 
-    std::string file;
-    long nfiles = 1;
-    long nbytes = 0;
+    std::string filename;
+    long nfiles = 1l;
+    long nbytes = 0l;
     SIZE_M size_m = SIZE_ERROR;
 
     for (int i = 0; i < argc; i++)
@@ -69,7 +70,8 @@ int main(int argc, char *argv[])
         {
             if (i + 1 < argc)
             {
-                file = argv[i + 1];
+                filename = argv[i + 1];
+                i++;
             }
             else
             {
@@ -90,11 +92,12 @@ int main(int argc, char *argv[])
                 else
                 {
                     nfiles = atol(argv[i + 1]);
-                    if (nfiles <= 0)
+                    if (nfiles <= 0l)
                     {
                         std::cerr << "Error! Wrong number of files.\n";
                         return 1;
                     }
+                    i++;
                 }
             }
             else
@@ -116,11 +119,12 @@ int main(int argc, char *argv[])
                 else
                 {
                     nbytes = atol(argv[i + 1]);
-                    if (nbytes < 0)
+                    if (nbytes < 0l)
                     {
                         std::cerr << "Error! Wrong number of bytes.\n";
                         return 1;
                     }
+                    i++;
                 }
             }
             else
@@ -144,38 +148,115 @@ int main(int argc, char *argv[])
                 }
                 else
                 {
-                    std::cerr << "Error! .\n";
+                    std::cerr << "Error! Wrong file size generation mode.\n";
                     return 1;
                 }
+                i++;
             }
             else
             {
-                std::cerr << "Error! .\n";
+                std::cerr << "Error! File size generation mode not specified.\n";
                 return 1;
             }
         }
     }
 
-    /*
     srand(static_cast<size_t>(time(NULL)));
 
-    std::ofstream ofs;
-    ofs.open(argv[1], std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
-    if (ofs.is_open())
+    if (nfiles == 1l)
     {
-        for (int i = 0; i < atoi(argv[2]); i++)
+        std::ofstream ofs;
+        ofs.open(filename, std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
+        if (ofs.is_open())
         {
-            char c = rand() % (sizeof(char) * 0xFF);
-            ofs.write(reinterpret_cast<const char *>(&c), sizeof(char));
+            long bytes = 0l;
+            if (size_m == RANDOM_SIZE)
+            {
+                if (nbytes > 0l)
+                {
+                    bytes = rand() % nbytes;
+                }
+                else
+                {
+                    bytes = rand() % std::numeric_limits<long>::max();
+                }
+            }
+            else
+            {
+                bytes = nbytes;
+            }
+
+            for (long i = 0l; i < bytes; i++)
+            {
+                char c = rand() % (sizeof(char) * 0xFF);
+                ofs.write(reinterpret_cast<const char *>(&c), sizeof(char));
+            }
+            
+            ofs.close();
+            std::cout << "Operation successful!\n";
         }
-        ofs.close();
-        std::cout << "Operation successful!\n";
+        else
+        {
+            std::cerr << "Error! File '" << filename << "' not created.\n";
+            return 1;
+        }
     }
     else
     {
-        std::cerr << "Error! File '" << argv[1] << "' not created.\n";
-        return 1;
+        std::string part1;
+        std::string part2;
+        std::string tmp;
+
+        size_t pos = filename.find("[%]");
+        if (pos != std::string::npos)
+        {
+            part1 = filename.substr(0, pos);
+            part2 = filename.substr(pos + 3, filename.length() - pos - 3);
+        }
+        else
+        {
+            std::cerr << "Error! Wrong file name.\n";
+            return 1;
+        }
+        
+        for (long i = 0l; i < nfiles; i++)
+        {
+            tmp = part1 + std::to_string(i) + part2;
+
+            std::ofstream ofs;
+            ofs.open(tmp, std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
+            if (ofs.is_open())
+            {
+                long bytes = 0l;
+                if (size_m == RANDOM_SIZE)
+                {
+                    if (nbytes > 0l)
+                    {
+                        bytes = rand() % nbytes;
+                    }
+                    else
+                    {
+                        bytes = rand() % std::numeric_limits<long>::max();
+                    }
+                }
+                else
+                {
+                    bytes = nbytes;
+                }
+
+                for (long j = 0l; j < bytes; j++)
+                {
+                    char c = rand() % (sizeof(char) * 0xFF);
+                    ofs.write(reinterpret_cast<const char *>(&c), sizeof(char));
+                }
+                ofs.close();
+            }
+            else
+            {
+                std::cerr << "Error! File '" << tmp << "' not created.\n";
+            }
+        }
+        std::cout << "Operation successful!\n";
     }
-    */
     return 0;
 }
